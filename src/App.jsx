@@ -46,7 +46,7 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedImageIndex, progress?.images])
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+  const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').trim()
 
   useEffect(() => {
     let interval
