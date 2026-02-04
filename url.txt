@@ -1,1 +1,0 @@
-https://qopla-backend-production.up.railway.app
