@@ -192,10 +192,9 @@ function App() {
       <main className="container">
         <header className="header">
           <div className="logo">
-            <span className="logo-icon">📸</span>
             <h1>Qopla Bilder</h1>
           </div>
-          <p className="tagline">Ladda ner produktbilder från valfri Qopla-restaurang</p>
+          <p className="tagline">Ladda ner bilder från valfri Qopla-restaurang</p>
         </header>
 
       <div className="card">
@@ -221,10 +220,7 @@ function App() {
                     Bearbetar...
                   </>
                 ) : (
-                  <>
-                    <span className="btn-icon">🚀</span>
-                    Hämta bilder
-                  </>
+                  'Hämta bilder'
                 )}
               </button>
             </form>
@@ -255,7 +251,6 @@ function App() {
               {progress.images && progress.images.length > 0 && (
                 <div className="images-section">
                   <h3 className="images-title">
-                    <span className="title-icon">🖼️</span>
                     Hämtade bilder ({progress.images.length})
                   </h3>
                   
@@ -272,7 +267,7 @@ function App() {
                             alt={progress.images[progress.images.length - 1]?.productName}
                           />
                           <div className="image-overlay">
-                            <span className="zoom-icon">🔍</span>
+                            <span className="zoom-icon">⊕</span>
                           </div>
                         </div>
                         <div className="latest-image-info">
@@ -304,10 +299,10 @@ function App() {
                                 }}
                               />
                               <div className="image-placeholder" style={{ display: 'none' }}>
-                                <span>🍔</span>
+                                <span>?</span>
                               </div>
                               <div className="image-overlay">
-                                <span className="zoom-icon">🔍</span>
+                                <span className="zoom-icon">⊕</span>
                               </div>
                             </div>
                             <span className="image-name">{img.productName || img.filename}</span>
@@ -322,17 +317,15 @@ function App() {
               {progress.status === 'completed' && (
                 <div className="completed-section animate-fade-up">
                   <div className="success-message">
-                    <span className="success-icon animate-bounce">🎉</span>
+                    <span className="success-icon">✓</span>
                     <p>{progress.images?.length || 0} bilder hämtades!</p>
                   </div>
                   
                   <div className="action-buttons">
                     <button onClick={handleDownload} className="btn-primary btn-download">
-                      <span className="btn-icon">📥</span>
                       Ladda ner ZIP
                     </button>
                     <button onClick={resetForm} className="btn-secondary">
-                      <span className="btn-icon">↻</span>
                       Börja om
                     </button>
                   </div>
