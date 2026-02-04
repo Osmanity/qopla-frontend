@@ -50,18 +50,47 @@ function App() {
 
   useEffect(() => {
     let interval
+    let failCount = 0
+    const maxFails = 5
+    
     if (sessionId && progress?.status !== 'completed' && progress?.status !== 'error') {
       interval = setInterval(async () => {
         try {
           const res = await fetch(`${API_URL}/api/progress/${sessionId}`)
+          
+          if (!res.ok) {
+            failCount++
+            console.error(`Progress check failed: ${res.status}`)
+            if (failCount >= maxFails) {
+              setError(`Servern svarar inte (${res.status}). Försök igen.`)
+              setProgress(null)
+              setSessionId(null)
+              setIsLoading(false)
+              clearInterval(interval)
+            }
+            return
+          }
+          
+          failCount = 0
           const data = await res.json()
           setProgress(data)
           
           if (data.status === 'completed' || data.status === 'error') {
             setIsLoading(false)
+            if (data.status === 'error' && data.error) {
+              setError(data.error)
+            }
           }
         } catch (err) {
+          failCount++
           console.error('Progress check failed:', err)
+          if (failCount >= maxFails) {
+            setError('Tappade anslutningen till servern. Försök igen.')
+            setProgress(null)
+            setSessionId(null)
+            setIsLoading(false)
+            clearInterval(interval)
+          }
         }
       }, 1000)
     }
@@ -83,13 +112,22 @@ function App() {
     setIsLoading(true)
     
     try {
+      console.log('Sending request to:', `${API_URL}/api/scrape`)
       const res = await fetch(`${API_URL}/api/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
       })
       
+      if (!res.ok) {
+        const errorText = await res.text()
+        setError(`Servern returnerade fel (${res.status}): ${errorText || 'Okänt fel'}`)
+        setIsLoading(false)
+        return
+      }
+      
       const data = await res.json()
+      console.log('Response:', data)
       
       if (data.error) {
         setError(data.error)
@@ -97,10 +135,17 @@ function App() {
         return
       }
       
+      if (!data.sessionId) {
+        setError('Servern returnerade inget sessions-ID. Kontrollera backend.')
+        setIsLoading(false)
+        return
+      }
+      
       setSessionId(data.sessionId)
       setProgress({ status: 'starting' })
     } catch (err) {
-      setError('Kunde inte ansluta till servern. Se till att backend körs.')
+      console.error('Request failed:', err)
+      setError(`Kunde inte ansluta till servern: ${err.message}`)
       setIsLoading(false)
     }
   }
