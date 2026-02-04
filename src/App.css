@@ -342,10 +342,22 @@ body {
 .progress-bar-container {
   background: var(--bg-cream);
   border-radius: 100px;
-  height: 10px;
-  overflow: hidden;
+  height: 28px;
   position: relative;
   border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  z-index: 2;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
 
 .progress-bar {
@@ -391,7 +403,7 @@ body {
   display: grid;
   grid-template-columns: 420px 1fr;
   gap: 28px;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (max-width: 1000px) {
@@ -413,8 +425,8 @@ body {
 }
 
 .latest-image-container {
-  position: sticky;
-  top: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .latest-image-card {
@@ -425,6 +437,9 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 16px var(--qopla-green-glow);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .animate-scale-in {
@@ -449,9 +464,10 @@ body {
 
 .latest-image-wrapper {
   position: relative;
-  aspect-ratio: 1;
+  flex: 1;
   overflow: hidden;
   background: var(--bg-cream);
+  min-height: 300px;
 }
 
 .latest-image-wrapper img {
@@ -498,9 +514,11 @@ body {
   background: var(--bg-cream);
   border-radius: 16px;
   padding: 16px;
+  padding-right: 10px;
   border: 1px solid var(--border);
   height: 520px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .images-gallery {
@@ -511,7 +529,11 @@ body {
 }
 
 .images-gallery-container::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+}
+
+.images-gallery-container::-webkit-scrollbar-gutter {
+  padding-right: 8px;
 }
 
 .images-gallery-container::-webkit-scrollbar-track {
@@ -587,36 +609,6 @@ body {
   background: var(--bg-cream);
 }
 
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(8, 68, 36, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.image-card:hover .image-overlay,
-.latest-image-card:hover .image-overlay {
-  opacity: 1;
-}
-
-.zoom-icon {
-  font-size: 24px;
-  color: #ffffff;
-  transform: scale(0.8);
-  transition: transform 0.25s ease;
-}
-
-.image-card:hover .zoom-icon,
-.latest-image-card:hover .zoom-icon {
-  transform: scale(1);
-}
 
 .image-name {
   display: block;

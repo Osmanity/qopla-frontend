@@ -244,6 +244,9 @@ function App() {
                       className="progress-bar-downloaded" 
                       style={{ width: `${((progress.images?.length || 0) / progress.total) * 100}%` }}
                     ></div>
+                    <span className="progress-text">
+                      {progress.images?.length || 0} / {progress.total}
+                    </span>
                   </div>
                 </div>
               )}
@@ -266,9 +269,6 @@ function App() {
                             src={`${API_URL}${progress.images[progress.images.length - 1]?.imagePath}`} 
                             alt={progress.images[progress.images.length - 1]?.productName}
                           />
-                          <div className="image-overlay">
-                            <span className="zoom-icon">⊕</span>
-                          </div>
                         </div>
                         <div className="latest-image-info">
                           <span className="latest-image-name">
@@ -300,9 +300,6 @@ function App() {
                               />
                               <div className="image-placeholder" style={{ display: 'none' }}>
                                 <span>?</span>
-                              </div>
-                              <div className="image-overlay">
-                                <span className="zoom-icon">⊕</span>
                               </div>
                             </div>
                             <span className="image-name">{img.productName || img.filename}</span>
