@@ -192,7 +192,7 @@ function App() {
       <main className="container">
         <header className="header">
           <div className="logo">
-            <h1>Qopla Bilder</h1>
+            <h1>QoplaSnap</h1>
           </div>
           <p className="tagline">Ladda ner bilder från valfri Qopla-restaurang</p>
         </header>
