@@ -7,6 +7,8 @@ function App() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(null)
+  const [scrapeMode, setScrapeMode] = useState('normal')
+  const [imageSize, setImageSize] = useState('medium')
   const urlInputRef = useRef(null)
 
   const selectedImage = selectedImageIndex !== null && progress?.images 
@@ -112,11 +114,18 @@ function App() {
     setIsLoading(true)
     
     try {
-      console.log('Sending request to:', `${API_URL}/api/scrape`)
-      const res = await fetch(`${API_URL}/api/scrape`, {
+      const endpoint = scrapeMode === 'turbo' 
+        ? `${API_URL}/api/scrape-turbo` 
+        : `${API_URL}/api/scrape`
+      const body = scrapeMode === 'turbo' 
+        ? { url, imageSize } 
+        : { url }
+      
+      console.log('Sending request to:', endpoint)
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
+        body: JSON.stringify(body)
       })
       
       if (!res.ok) {
@@ -163,6 +172,8 @@ function App() {
       navigating: 'Navigerar till sidan...',
       finding_products: 'Söker efter produkter...',
       scraping: 'Hämtar bilder...',
+      extracting_urls: '⚡ Extraherar bild-URLs...',
+      downloading_turbo: '⚡ Laddar ner bilder direkt...',
       completed: 'Klart!',
       error: 'Ett fel uppstod'
     }
@@ -178,6 +189,8 @@ function App() {
     setError('')
     setIsLoading(false)
     setSelectedImageIndex(null)
+    setScrapeMode('normal')
+    setImageSize('medium')
   }
 
   return (
@@ -210,6 +223,62 @@ function App() {
                   disabled={isLoading}
                 />
               </div>
+
+              {/* Mode Selection */}
+              <div className="mode-selection">
+                <label className="mode-label">Hämtningsläge</label>
+                <div className="mode-options">
+                  <label className={`mode-option ${scrapeMode === 'normal' ? 'selected' : ''}`}>
+                    <input 
+                      type="radio" 
+                      name="scrapeMode" 
+                      value="normal" 
+                      checked={scrapeMode === 'normal'}
+                      onChange={(e) => setScrapeMode(e.target.value)}
+                      disabled={isLoading}
+                    />
+                    <span className="mode-radio"></span>
+                    <span className="mode-text">Normal</span>
+                    <span className="mode-desc">Klickar på varje produkt</span>
+                  </label>
+                  <label className={`mode-option turbo ${scrapeMode === 'turbo' ? 'selected' : ''}`}>
+                    <input 
+                      type="radio" 
+                      name="scrapeMode" 
+                      value="turbo" 
+                      checked={scrapeMode === 'turbo'}
+                      onChange={(e) => setScrapeMode(e.target.value)}
+                      disabled={isLoading}
+                    />
+                    <span className="mode-radio"></span>
+                    <span className="mode-text">⚡ Turbo</span>
+                    <span className="mode-desc">Direkt från S3</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Size Selection (only visible in turbo mode) */}
+              {scrapeMode === 'turbo' && (
+                <div className="size-selection">
+                  <label className="size-label">Bildstorlek</label>
+                  <div className="size-options">
+                    {['small', 'medium', 'large', 'original'].map((size) => (
+                      <label key={size} className={`size-option ${imageSize === size ? 'selected' : ''}`}>
+                        <input 
+                          type="radio" 
+                          name="imageSize" 
+                          value={size} 
+                          checked={imageSize === size}
+                          onChange={(e) => setImageSize(e.target.value)}
+                          disabled={isLoading}
+                        />
+                        <span className="size-radio"></span>
+                        <span>{size.charAt(0).toUpperCase() + size.slice(1)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               {error && <div className="error animate-shake">{error}</div>}
               
