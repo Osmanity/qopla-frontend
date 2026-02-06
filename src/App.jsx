@@ -7,8 +7,8 @@ function App() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(null)
-  const [scrapeMode, setScrapeMode] = useState('normal')
-  const [imageSize, setImageSize] = useState('medium')
+  const [imageSize, setImageSize] = useState('original')
+  const [showFilters, setShowFilters] = useState(false)
   const urlInputRef = useRef(null)
 
   const selectedImage = selectedImageIndex !== null && progress?.images 
@@ -114,12 +114,8 @@ function App() {
     setIsLoading(true)
     
     try {
-      const endpoint = scrapeMode === 'turbo' 
-        ? `${API_URL}/api/scrape-turbo` 
-        : `${API_URL}/api/scrape`
-      const body = scrapeMode === 'turbo' 
-        ? { url, imageSize } 
-        : { url }
+      const endpoint = `${API_URL}/api/scrape-turbo`
+      const body = { url, imageSize }
       
       console.log('Sending request to:', endpoint)
       const res = await fetch(endpoint, {
@@ -189,8 +185,8 @@ function App() {
     setError('')
     setIsLoading(false)
     setSelectedImageIndex(null)
-    setScrapeMode('normal')
-    setImageSize('medium')
+    setImageSize('original')
+    setShowFilters(false)
   }
 
   return (
@@ -224,41 +220,8 @@ function App() {
                 />
               </div>
 
-              {/* Mode Selection */}
-              <div className="mode-selection">
-                <label className="mode-label">Hämtningsläge</label>
-                <div className="mode-options">
-                  <label className={`mode-option ${scrapeMode === 'normal' ? 'selected' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="scrapeMode" 
-                      value="normal" 
-                      checked={scrapeMode === 'normal'}
-                      onChange={(e) => setScrapeMode(e.target.value)}
-                      disabled={isLoading}
-                    />
-                    <span className="mode-radio"></span>
-                    <span className="mode-text">Normal</span>
-                    <span className="mode-desc">Klickar på varje produkt</span>
-                  </label>
-                  <label className={`mode-option turbo ${scrapeMode === 'turbo' ? 'selected' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="scrapeMode" 
-                      value="turbo" 
-                      checked={scrapeMode === 'turbo'}
-                      onChange={(e) => setScrapeMode(e.target.value)}
-                      disabled={isLoading}
-                    />
-                    <span className="mode-radio"></span>
-                    <span className="mode-text">⚡ Turbo</span>
-                    <span className="mode-desc">Direkt från S3</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Size Selection (only visible in turbo mode) */}
-              {scrapeMode === 'turbo' && (
+              {/* Size Selection - Hidden by default */}
+              {showFilters && (
                 <div className="size-selection">
                   <label className="size-label">Bildstorlek</label>
                   <div className="size-options">
@@ -282,16 +245,28 @@ function App() {
               
               {error && <div className="error animate-shake">{error}</div>}
               
-              <button type="submit" disabled={isLoading} className="btn-primary">
-                {isLoading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Bearbetar...
-                  </>
-                ) : (
-                  'Hämta bilder'
-                )}
-              </button>
+              <div className="button-group">
+                <button type="submit" disabled={isLoading} className="btn-primary">
+                  {isLoading ? (
+                    <>
+                      <span className="spinner"></span>
+                      Bearbetar...
+                    </>
+                  ) : (
+                    'Hämta bilder'
+                  )}
+                </button>
+                <button 
+                  type="button" 
+                  className={`btn-filter ${showFilters ? 'active' : ''}`}
+                  onClick={() => setShowFilters(!showFilters)}
+                  disabled={isLoading}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                  </svg>
+                </button>
+              </div>
             </form>
           ) : (
             <div className="progress-section">
@@ -304,6 +279,9 @@ function App() {
 
               {progress.total > 0 && (
                 <div className="progress-info">
+                  <span className="progress-text">
+                    {progress.images?.length || 0} / {progress.total}
+                  </span>
                   <div className="progress-bar-container">
                     <div 
                       className="progress-bar" 
@@ -313,9 +291,6 @@ function App() {
                       className="progress-bar-downloaded" 
                       style={{ width: `${((progress.images?.length || 0) / progress.total) * 100}%` }}
                     ></div>
-                    <span className="progress-text">
-                      {progress.images?.length || 0} / {progress.total}
-                    </span>
                   </div>
                 </div>
               )}

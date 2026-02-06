@@ -275,6 +275,50 @@ body {
   color: var(--qopla-green);
 }
 
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.button-group .btn-primary {
+  flex: 1;
+}
+
+.btn-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-cream);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.btn-filter:hover:not(:disabled) {
+  border-color: var(--qopla-green);
+  color: var(--qopla-green);
+  background: var(--bg-card);
+}
+
+.btn-filter.active {
+  border-color: var(--qopla-green);
+  background: var(--qopla-green-glow);
+  color: var(--qopla-green);
+}
+
+.btn-filter:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-filter svg {
+  width: 20px;
+  height: 20px;
+}
+
 .spinner {
   width: 20px;
   height: 20px;
@@ -349,15 +393,12 @@ body {
 }
 
 .progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 12px;
+  display: block;
+  text-align: center;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--text-primary);
-  z-index: 2;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  color: var(--qopla-green);
+  margin-bottom: 8px;
 }
 
 .progress-bar {
@@ -971,8 +1012,8 @@ body {
   flex-direction: column;
   gap: 12px;
   animation: fadeUp 0.3s ease-out;
-  background: rgba(245, 158, 11, 0.05);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: var(--qopla-green-glow);
+  border: 1px solid rgba(8, 68, 36, 0.2);
   border-radius: 12px;
   padding: 16px;
 }
@@ -980,7 +1021,7 @@ body {
 .size-label {
   font-size: 14px;
   font-weight: 600;
-  color: #f59e0b;
+  color: var(--qopla-green);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1006,12 +1047,12 @@ body {
 }
 
 .size-option:hover {
-  border-color: #f59e0b;
+  border-color: var(--qopla-green);
 }
 
 .size-option.selected {
-  border-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.08);
+  border-color: var(--qopla-green);
+  background: var(--qopla-green-glow);
 }
 
 .size-option input[type="radio"] {
@@ -1030,8 +1071,8 @@ body {
 }
 
 .size-option.selected .size-radio {
-  background: #f59e0b;
-  border-color: #f59e0b;
+  background: var(--qopla-green);
+  border-color: var(--qopla-green);
 }
 
 .size-option.selected .size-radio::after {
@@ -1053,7 +1094,7 @@ body {
 }
 
 .size-option.selected span:last-child {
-  color: #f59e0b;
+  color: var(--qopla-green);
 }
 
 @media (max-width: 600px) {
